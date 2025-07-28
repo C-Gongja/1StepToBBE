@@ -9,14 +9,12 @@ from app.resolvers.index import resolvers
 load_dotenv()
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, instance_relative_config=True)
     CORS(app)
 
-    # 스키마 설정
     type_defs = load_schema_from_path("schema")
     schema = make_executable_schema(type_defs, *resolvers)
 
-    # GraphQL API 라우트 등록
     app.add_url_rule("/graphql", view_func=graphql_server(schema), methods=["POST"])
 
     return app
