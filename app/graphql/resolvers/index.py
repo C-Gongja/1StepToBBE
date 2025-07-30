@@ -1,5 +1,5 @@
-from .query_resolvers import query_resolvers
-from .mutation_resolvers import mutation_resolvers
+from .user.query_resolvers import query_resolvers
+from .user.mutation_resolvers import mutation_resolvers
 
 resolvers = [query_resolvers, mutation_resolvers]
 
