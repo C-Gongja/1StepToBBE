@@ -1,7 +1,6 @@
 from .user.query_resolvers import query_resolvers
-from .user.mutation_resolvers import mutation_resolvers
 
-resolvers = [query_resolvers, mutation_resolvers]
+resolvers = [query_resolvers]
 
 # 동적으로 resolver loading
 # import importlib

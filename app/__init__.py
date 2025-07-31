@@ -18,12 +18,10 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
-
     app.config.from_object(Config)
 
     CORS(app, origins=[os.getenv("LOCALHOST")])
     # JWTManager(app)
-
     init_db(app)
 
     # ⭐ GraphQL 설정 - 데이터 조회용

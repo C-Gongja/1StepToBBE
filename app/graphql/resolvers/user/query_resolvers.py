@@ -4,6 +4,12 @@ from db.db import get_db
 
 query_resolvers = QueryType()
 
+
+@query_resolvers.field("test")
+def resolve_test(obj, info):
+    return {"text": "Hello, GraphQL!"}
+
+
 @query_resolvers.field("user")
 def resolve_user(_, info, id):
     """⭐ 사용자 조회 - GraphQL로 처리하는 이유:
