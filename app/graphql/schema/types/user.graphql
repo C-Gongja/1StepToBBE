@@ -1,0 +1,9 @@
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  bio: String
+  avatar_url: String
+  is_verified: Boolean!
+  created_at: String!
+}

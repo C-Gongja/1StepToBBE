@@ -7,7 +7,10 @@ query_resolvers = QueryType()
 
 @query_resolvers.field("test")
 def resolve_test(obj, info):
-    return {"text": "Hello, GraphQL!"}
+    return {
+        "id": 0,
+        "test": {"id": 0, "text": ["Testing GraphQL!", "Hello GraphQL!", "W GraphQL!"]},
+    }
 
 
 @query_resolvers.field("user")
@@ -53,28 +56,28 @@ def resolve_users(_, info, limit=10, offset=0):
     return users
 
 
-@query_resolvers.field("userWithTodos")
-def resolve_user_with_todos(_, info, user_id):
-    """⭐ 사용자와 관련 데이터 함께 조회 - GraphQL의 핵심 장점!
-    REST API라면 여러 번 요청해야 하는 데이터를 한 번에 가져옴
-    """
+# @query_resolvers.field("userWithTodos")
+# def resolve_user_with_todos(_, info, user_id):
+#     """⭐ 사용자와 관련 데이터 함께 조회 - GraphQL의 핵심 장점!
+#     REST API라면 여러 번 요청해야 하는 데이터를 한 번에 가져옴
+#     """
 
-    db = info.context["db"]
+#     db = info.context["db"]
 
-    # 사용자 기본 정보
-    user = db.users.find_one({"_id": ObjectId(user_id)})
-    if not user:
-        return None
+#     # 사용자 기본 정보
+#     user = db.users.find_one({"_id": ObjectId(user_id)})
+#     if not user:
+#         return None
 
-    user["id"] = str(user["_id"])
-    del user["_id"]
-    user.pop("password_hash", None)
+#     user["id"] = str(user["_id"])
+#     del user["_id"]
+#     user.pop("password_hash", None)
 
-    # 사용자의 할일 목록도 함께 조회
-    todos = list(db.todos.find({"user_id": user_id}))
-    for todo in todos:
-        todo["id"] = str(todo["_id"])
-        del todo["_id"]
+#     # 사용자의 할일 목록도 함께 조회
+#     todos = list(db.todos.find({"user_id": user_id}))
+#     for todo in todos:
+#         todo["id"] = str(todo["_id"])
+#         del todo["_id"]
 
-    user["todos"] = todos
-    return user
+#     user["todos"] = todos
+#     return user

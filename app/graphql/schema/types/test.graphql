@@ -1,0 +1,9 @@
+type Test {
+  id: Int
+  test: TestData
+}
+
+type TestData {
+  id: Int!
+  text: [String!]!
+}
