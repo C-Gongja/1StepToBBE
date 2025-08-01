@@ -32,7 +32,7 @@ def init_db(app):
 
 def get_db():
     if "db" not in g:
-        g.db = mongo.db
+        g.db = client.db
         print("♻️ Created new DB instance")
     else:
         print(f"♻️ Reuse existing DB Instance")

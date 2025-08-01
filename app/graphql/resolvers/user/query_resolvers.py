@@ -36,24 +36,24 @@ def resolve_user(_, info, id):
         raise Exception(f"사용자 조회 실패: {str(e)}")
 
 
-@query_resolvers.field("users")
-def resolve_users(_, info, limit=10, offset=0):
-    """⭐ 사용자 목록 조회 - GraphQL이 유리한 이유:
-    - 페이지네이션 + 필드 선택
-    - 복잡한 필터링 조건
-    - 관련 데이터와 조인
-    """
+# @query_resolvers.field("users")
+# def resolve_users(_, info, limit=10, offset=0):
+#     """⭐ 사용자 목록 조회 - GraphQL이 유리한 이유:
+#     - 페이지네이션 + 필드 선택
+#     - 복잡한 필터링 조건
+#     - 관련 데이터와 조인
+#     """
 
-    db = info.context["db"]
+#     db = info.context["db"]
 
-    users = list(db.users.find().skip(offset).limit(limit))
+#     users = list(db.users.find().skip(offset).limit(limit))
 
-    for user in users:
-        user["id"] = str(user["_id"])
-        del user["_id"]
-        user.pop("password_hash", None)
+#     for user in users:
+#         user["id"] = str(user["_id"])
+#         del user["_id"]
+#         user.pop("password_hash", None)
 
-    return users
+#     return users
 
 
 # @query_resolvers.field("userWithTodos")

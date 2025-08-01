@@ -1,5 +1,7 @@
-import datetime
-from flask import Blueprint, request, jsonify
+from datetime import datetime
+from bson import Binary
+from uuid import uuid4
+from flask import Blueprint, logging, request, jsonify
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -7,7 +9,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
-from marshmallow import Schema, fields, ValidationError
+from marshmallow import Schema, fields, ValidationError, validates
 from db.db import get_db
 import re
 
@@ -20,10 +22,20 @@ class RegisterSchema(Schema):
     password = fields.Str(required=True, validate=lambda x: len(x) >= 6)
     name = fields.Str(required=True, validate=lambda x: len(x) >= 2)
 
+    @validates("password")
+    def validate_password(self, value, **kwargs):  # **kwargs 추가
+        if not re.search(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$", value):
+            raise ValidationError("Password must contain letters and numbers.")
+
 
 class LoginSchema(Schema):
     email = fields.Email(required=True)
     password = fields.Str(required=True)
+
+    @validates("password")
+    def validate_password(self, value):
+        if not re.search(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$", value):
+            raise ValidationError("Password must contain letters and numbers.")
 
 
 @auth_bp.route("/register", methods=["POST"])
@@ -35,12 +47,11 @@ def register():
     - 이메일 인증 등 부가 기능 연동
     """
 
-    schema = RegisterSchema()
-
     try:
-        # 요청 데이터 검증
-        data = schema.load(request.get_json())
+        data = RegisterSchema().load(request.get_json())
+        print(f"data: {data}")
     except ValidationError as err:
+        logging.error(f"Validation error: {err.messages}")
         return jsonify({"error": "Validation failed", "details": err.messages}), 400
 
     db = get_db()
@@ -51,6 +62,7 @@ def register():
 
     # 사용자 생성
     user_data = {
+        "uuid": Binary.from_uuid(uuid4()),
         "email": data["email"],
         "name": data["name"],
         "password_hash": generate_password_hash(data["password"]),
