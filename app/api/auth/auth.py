@@ -33,7 +33,7 @@ class LoginSchema(Schema):
     password = fields.Str(required=True)
 
     @validates("password")
-    def validate_password(self, value):
+    def validate_password(self, value, **kwargs):  # **kwargs 추가
         if not re.search(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$", value):
             raise ValidationError("Password must contain letters and numbers.")
 
